@@ -36,7 +36,7 @@ def pozyx_pose_pub():
         rospy.loginfo("POS: %s, QUAT: %s" % (str(coords), str(quat)))
         h.stamp = rospy.Time.now()
         pub.publish(Point(coords.x, coords.y, coords.z), Quaternion(quat.x, quat.y, quat.z, quat.w))
-        pubStamped.publish(h, Pose(Point(coords.x/1000, coords.y/1000, coords.z/1000), Quaternion(quat.x, quat.y, quat.z, quat.w)))
+        pubStamped.publish(h, Pose(Point(float(coords.x)/1000, float(coords.y)/1000, float(coords.z)/1000), Quaternion(quat.x, quat.y, quat.z, quat.w)))
 
 
 if __name__ == '__main__':
