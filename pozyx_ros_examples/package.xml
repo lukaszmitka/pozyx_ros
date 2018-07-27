@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>pozyx_ros_examples</name>
+  <name>pozyx</name>
   <version>0.1.0</version>
   <description>ROS package for the Pozyx positioning system.</description>
 
