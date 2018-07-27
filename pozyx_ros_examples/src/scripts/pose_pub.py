@@ -11,14 +11,18 @@ data comes from integers. Suggestions to replace this are quite welcomed.
 
 import pypozyx
 import rospy
-from geometry_msgs.msg import Point, Pose, Quaternion
+from geometry_msgs.msg import Point, Pose, Quaternion, PoseStamped
+import std_msgs.msg
 
 remote_id = None
 
 
 def pozyx_pose_pub():
     pub = rospy.Publisher('pozyx_pose', Pose, queue_size=40)
+    pubStamped = rospy.Publisher('pozyx_pose_stamped', PoseStamped, queue_size=40)
     rospy.init_node('pozyx_pose_node')
+    h = std_msgs.msg.Header()
+    h.frame_id = "pozyx"
     try:
         pozyx = pypozyx.PozyxSerial(pypozyx.get_serial_ports()[0].device)
     except:
@@ -30,8 +34,9 @@ def pozyx_pose_pub():
         pozyx.doPositioning(coords, pypozyx.POZYX_3D, remote_id=remote_id)
         pozyx.getQuaternion(quat, remote_id=remote_id)
         rospy.loginfo("POS: %s, QUAT: %s" % (str(coords), str(quat)))
-        pub.publish(Point(coords.x, coords.y, coords.z),
-                    Quaternion(quat.x, quat.y, quat.z, quat.w))
+        h.stamp = rospy.Time.now()
+        pub.publish(Point(coords.x, coords.y, coords.z), Quaternion(quat.x, quat.y, quat.z, quat.w))
+        pubStamped.publish(h, Pose(Point(coords.x/1000, coords.y/1000, coords.z/1000), Quaternion(quat.x, quat.y, quat.z, quat.w)))
 
 
 if __name__ == '__main__':
